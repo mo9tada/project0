@@ -7,6 +7,8 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY as string;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 // Server-side client for server actions
 export const createServerClient = () => {
-  return createClient(supabaseUrl!,supabaseKey!)
-
-}
+  if (!supabaseServiceKey) {
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set in environment variables");
+  }
+  return createClient(supabaseUrl, supabaseServiceKey);
+};
