@@ -1,15 +1,17 @@
 "use client"
 
-import { useActionState } from "react"
+import { useFormState } from "react-dom";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader2, ShieldIcon } from "lucide-react"
 import { adminLogin } from "../app/actions/admin"
+import React, { useState } from "react";
 
 export function AdminLoginForm() {
-    const [state, formAction, isPending] = useActionState(adminLogin, null)
+    const [state, formAction] = useFormState(adminLogin, { message: "" });
+    const [isPending, setIsPending] = useState(false);
 
     return (
         <Card className="w-full max-w-md mx-auto">
@@ -18,9 +20,8 @@ export function AdminLoginForm() {
                     <ShieldIcon className="h-12 w-12 text-primary" />
                 </div>
                 <CardTitle className="text-2xl font-bold">Compte Admin</CardTitle>
-                <CardDescription>Entrer Le Mot De Passe Admin</CardDescription>
             </CardHeader>
-            <form action={formAction}>
+            <form action={formAction} onSubmit={() => setIsPending(true)}>
                 <CardContent className="grid gap-4">
                     <div className="grid gap-2">
                         <Label htmlFor="password">Mot De Passe Admin</Label>
@@ -29,7 +30,7 @@ export function AdminLoginForm() {
                     {state?.message && <p className="text-sm font-medium text-destructive">{state.message}</p>}
                 </CardContent>
                 <CardFooter className="p-4">
-                    <Button type="submit" className="w-full bg-red-800" disabled={isPending}>
+                    <Button type="submit" className="w-full bg-red-800 text-white hover:text-black hover:bg-white" disabled={isPending}>
                         {isPending ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -44,3 +45,4 @@ export function AdminLoginForm() {
         </Card>
     )
 }
+

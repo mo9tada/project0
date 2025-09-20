@@ -159,10 +159,10 @@ export default function HierarchyPage() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg" className=" text-white hover:bg-red-800 hover:text-white" >
+                <Button asChild size="lg" className="bg-red-800 text-white hover:bg-white hover:text-black" >
                   <Link href="/Formulaire">S'inscrire maintenant</Link>
                 </Button>
-                <Button asChild size="lg" className=" text-white hover:bg-red-800 hover:text-white" >
+                <Button asChild size="lg" className="bg-red-800 text-white hover:bg-white hover:text-black" >
                   <Link href="/Evenements">Voir nos événements</Link>
                 </Button>
               </div>

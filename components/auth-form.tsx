@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -39,7 +39,8 @@ export function AuthForm({ type, action }: AuthFormProps) {
     return { message: data.message }
   }
 
-  const [state, formAction, isPending] = useActionState(registerUser, null)
+  const [state, setState] = useState<{ message?: string }>({});
+  const [isPending, setIsPending] = useState(false);
 
   const title = "Formulaire"
   const description = "Entrer les données pour s'inscrire"
@@ -62,8 +63,16 @@ export function AuthForm({ type, action }: AuthFormProps) {
             <CardTitle className="text-2xl font-bold text-red-800">{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </CardHeader>
-
-          <form action={formAction}>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setIsPending(true);
+              const formData = new FormData(e.currentTarget);
+              const result = await registerUser({}, formData);
+              setState(result || {});
+              setIsPending(false);
+            }}
+          >
             <CardContent className="grid gap-4">
 
               <div className="grid gap-2 p-2">
@@ -159,7 +168,7 @@ export function AuthForm({ type, action }: AuthFormProps) {
             </CardContent>
 
             <CardFooter className="flex flex-col gap-4">
-              <Button type="submit" className="w-full bg-red-800" disabled={isPending}>
+              <Button type="submit" className="w-full bg-red-800 text-white hover:bg-white hover:text-black" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

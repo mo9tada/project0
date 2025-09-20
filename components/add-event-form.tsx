@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useFormState, useFormStatus } from "react-dom";
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -10,7 +10,8 @@ import { createEvent } from "@/app/actions/events"
 import { useEffect } from "react"
 
 export function AddEventForm() {
-    const [state, formAction, isPending] = useActionState(createEvent, null)
+    const [state, formAction] = useFormState(createEvent, { message: "", success: false });
+    const { pending } = useFormStatus();
 
     // Reset form on successful submission
     useEffect(() => {
@@ -48,8 +49,8 @@ export function AddEventForm() {
                 </p>
             )}
 
-            <Button type="submit" className="w-full bg-red-800 hover:bg-white hover:text-black " disabled={isPending}>
-                {isPending ? (
+            <Button type="submit" className="w-full bg-red-800 text-white hover:bg-white hover:text-black " disabled={pending}>
+                {pending ? (
                     <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Creation D'Evenement...

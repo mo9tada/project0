@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
@@ -114,6 +116,16 @@
 }
 aside{
   display:flex;
+}
+@layer utilities {
+  .border-border {
+    border-color: theme('colors.border');}
+  .outline-ring-50 {
+    outline: 2px solid rgba(59, 130, 246, 0.5); /* example color with 50% opacity */
+  }
+  .text-foreground {
+    color: theme('colors.foreground');
+  }
 }
 
 @layer base {

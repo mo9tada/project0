@@ -28,7 +28,7 @@ export function Navbar() {
                     <Link href="/Contact" className="text-red-800 hover:text-black" prefetch={false}>
                         Contact
                     </Link>
-                    <Button asChild size="lg" className="bg-red-800 hover:bg-white hover:text-black">
+                    <Button asChild size="lg" className="bg-red-800 text-white hover:bg-white hover:text-black">
                         <Link href="/Formulaire">Formulaire</Link>
                     </Button>
                 </nav>
