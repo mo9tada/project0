@@ -19,24 +19,31 @@ export function AuthForm({ type, action }: AuthFormProps) {
       first_name: formData.get("first_name")?.toString() || "",
       father_name: formData.get("father_name")?.toString() || "",
       mother_name: formData.get("mother_name")?.toString() || "",
-      cnss: formData.get("cnss")?.toString() === "Oui",
+      cnss: formData.get("cnss")?.toString().toLowerCase() === "oui",
       family_status: formData.get("family_status")?.toString() || "",
       email: formData.get("email")?.toString() || "",
       phone: formData.get("phone")?.toString() || "",
       father_phone: formData.get("father_phone")?.toString() || "",
       gender: formData.get("gender")?.toString() || "",
-      date_de_naissance: formData.get("date_de_naissance")?.toString() || "",
-      first_time_scout: formData.get("first_time_scout")?.toString() === "Oui",
+      date_de_naissance: formData.get("date_de_naissance")
+        ? new Date(formData.get("date_de_naissance")!.toString()).toISOString().split("T")[0]
+        : "",
+      first_time_scout: formData.get("first_time_scout")?.toString().toLowerCase() === "oui",
     }
 
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
 
-    const data = await res.json()
-    return { message: data.message }
+      const data = await res.json()
+      return { message: data.message || "Erreur lors de l'inscription" }
+    } catch (err) {
+      console.error("Fetch error:", err)
+      return { message: "Erreur lors de l'envoi du formulaire" }
+    }
   }
 
   const [state, setState] = useState<{ message?: string }>({});
@@ -74,89 +81,73 @@ export function AuthForm({ type, action }: AuthFormProps) {
             }}
           >
             <CardContent className="grid gap-4">
-
+              {/* All form fields stay exactly the same */}
               <div className="grid gap-2 p-2">
                 <Label htmlFor="last_name">Nom:</Label>
                 <Input id="last_name" name="last_name" type="text" placeholder="Nom" className="border-red-800" required />
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label htmlFor="first_name">Prénom:</Label>
                 <Input id="first_name" name="first_name" type="text" placeholder="Prénom" className="border-red-800" required />
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label htmlFor="father_name">Nom du Père:</Label>
                 <Input id="father_name" name="father_name" type="text" placeholder="Nom du Père" className="border-red-800" required />
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label htmlFor="mother_name">Nom de la Mère:</Label>
                 <Input id="mother_name" name="mother_name" type="text" placeholder="Nom de la Mère" className="border-red-800" required />
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label>Avez-vous le CNSS:</Label>
                 <div className="flex gap-2">
                   <input id="cnssOui" name="cnss" type="radio" value="Oui" className="border-red-800" />
                   <Label htmlFor="cnssOui">Oui</Label>
-
                   <input id="cnssNon" name="cnss" type="radio" value="Non" className="border-red-800" />
                   <Label htmlFor="cnssNon">Non</Label>
                 </div>
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label>Situation Familiale:</Label>
                 <div className="flex gap-2">
                   <input id="maried" name="family_status" type="radio" value="maried" className="border-red-800" />
                   <Label htmlFor="maried">Mariés</Label>
-
                   <input id="divorced" name="family_status" type="radio" value="divorced" className="border-red-800" />
                   <Label htmlFor="divorced">Divorcés</Label>
-
                   <input id="dead" name="family_status" type="radio" value="dead" className="border-red-800" />
                   <Label htmlFor="dead">Décédés</Label>
                 </div>
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label htmlFor="email">Email:</Label>
                 <Input id="email" name="email" placeholder="Tapez votre Email" type="email" className="border-red-800" required />
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label htmlFor="phone">Numéro de votre Téléphone:</Label>
                 <Input id="phone" name="phone" placeholder="Tapez votre Numéro" type="text" className="border-red-800" required />
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label htmlFor="father_phone">Numéro de Téléphone du Parent:</Label>
                 <Input id="father_phone" name="father_phone" placeholder="Tapez le Numéro du Parent" type="text" className="border-red-800" required />
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label>Genre:</Label>
                 <div className="flex gap-2">
                   <input id="Homme" name="gender" type="radio" value="Homme" className="border-red-800" />
                   <Label htmlFor="Homme">Homme</Label>
-
                   <input id="Femme" name="gender" type="radio" value="Femme" className="border-red-800" />
                   <Label htmlFor="Femme">Femme</Label>
                 </div>
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label htmlFor="date_de_naissance">Date De Naissance:</Label>
                 <Input id="date_de_naissance" name="date_de_naissance" type="date" required />
               </div>
-
               <div className="grid gap-2 p-2">
                 <Label>Première Fois Chez Les Scouts:</Label>
                 <div className="flex gap-2">
                   <input id="firstTimeOui" name="first_time_scout" type="radio" value="Oui" className="border-red-800" />
                   <Label htmlFor="firstTimeOui">Oui</Label>
-
                   <input id="firstTimeNon" name="first_time_scout" type="radio" value="Non" className="border-red-800" />
                   <Label htmlFor="firstTimeNon">Non</Label>
                 </div>
