@@ -1,5 +1,6 @@
+// File: app/api/register/route.ts
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
+import { createServerClient } from "@/lib/supabaseClient";
 
 export async function POST(req: Request) {
   try {
@@ -7,8 +8,16 @@ export async function POST(req: Request) {
     console.log("API received:", body);
 
     // Convert Oui/Non to boolean
-    const cnssBool = body.cnss === true || body.cnss === "Oui";
-    const firstTimeScoutBool = body.first_time_scout === true || body.first_time_scout === "Oui";
+    const cnssBool = body.cnss?.toString().toLowerCase() === "oui";
+    const firstTimeScoutBool = body.first_time_scout?.toString().toLowerCase() === "oui";
+
+    // Format date to YYYY-MM-DD
+    const dateDeNaissance = body.date_de_naissance
+      ? new Date(body.date_de_naissance).toISOString().split("T")[0]
+      : null;
+
+    // Use server-side client (service role)
+    const supabase = createServerClient();
 
     const { data, error } = await supabase.from("users").insert([
       {
@@ -22,19 +31,22 @@ export async function POST(req: Request) {
         phone: body.phone,
         father_phone: body.father_phone,
         gender: body.gender,
-        date_de_naissance: body.date_de_naissance,
+        date_de_naissance: dateDeNaissance,
         first_time_scout: firstTimeScoutBool,
       },
     ]);
 
     if (error) {
       console.error("Supabase insert error:", error);
-      return NextResponse.json({ message: "Erreur lors de l'insertion dans la DB." }, { status: 500 });
+      return NextResponse.json(
+        { message: "Erreur lors de l'insertion dans la DB.", details: error },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ message: "Inscription réussie!", data });
-  } catch (error: any) {
-    console.error("API error:", error);
-    return NextResponse.json({ message: error.message || "Erreur lors de l'inscription." }, { status: 500 });
+  } catch (err: any) {
+    console.error("API error:", err);
+    return NextResponse.json({ message: err.message || "Erreur lors de l'inscription." }, { status: 500 });
   }
 }
